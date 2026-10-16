@@ -59,6 +59,8 @@ const Register = () => {
     }
   };
 
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   // ==========================================
   // VALIDATION
   // ==========================================
@@ -76,19 +78,21 @@ const Register = () => {
       return "Name must be at least 2 characters.";
     }
 
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return "Please enter a valid email address.";
     }
 
-    if (password.length < 6) {
-      return "Password must be at least 6 characters.";
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long.";
     }
 
-    if (!/^\d{10}$/.test(contact)) {
-      return "Mobile number must be exactly 10 digits (cannot exceed 10 digits).";
+    if (!/^[6-9]\d{9}$/.test(contact)) {
+      return "Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.";
+    }
+
+    if (!agreedToTerms) {
+      return "You must agree to the Terms of Service and Privacy Policy to create an account.";
     }
 
     return "";
@@ -324,7 +328,7 @@ const Register = () => {
                   id="email"
                   type="email"
                   name="email"
-                  placeholder="name@client.com or name@driver.com"
+                  placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
                   autoComplete="email"
@@ -333,24 +337,6 @@ const Register = () => {
                 />
 
               </div>
-
-              {formData.email && (
-                <div className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold">
-                  {formData.email.toLowerCase().includes("@driver") || formData.email.toLowerCase().includes("@delivery") ? (
-                    <span className="text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
-                      🚚 Driver Role (Requires Admin Confirmation before login)
-                    </span>
-                  ) : formData.email.toLowerCase().includes("@admin") ? (
-                    <span className="text-purple-600 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-md">
-                      🛡️ Admin Role
-                    </span>
-                  ) : (
-                    <span className="text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
-                      👤 Client Account
-                    </span>
-                  )}
-                </div>
-              )}
 
             </div>
 
@@ -381,7 +367,7 @@ const Register = () => {
                       : "password"
                   }
                   name="password"
-                  placeholder="Create a password"
+                  placeholder="At least 8 characters"
                   value={formData.password}
                   onChange={handleChange}
                   autoComplete="new-password"
@@ -403,6 +389,7 @@ const Register = () => {
                       ? "Hide password"
                       : "Show password"
                   }
+                  aria-pressed={showPassword}
                 >
                   {showPassword ? (
                     <EyeOff size={19} />
@@ -413,10 +400,57 @@ const Register = () => {
 
               </div>
 
-              <p className="text-xs text-slate-400 mt-2">
-                Password must be at least 6 characters.
-              </p>
+              {/* Password strength & hints */}
+              <div className="mt-2 space-y-1 text-xs text-slate-500">
+                <p>Must be at least 8 characters long.</p>
+                {formData.password && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <div className="h-1.5 flex-1 rounded-full bg-slate-200 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          formData.password.length >= 10 && /[0-9]/.test(formData.password) && /[^A-Za-z0-9]/.test(formData.password)
+                            ? "w-full bg-emerald-500"
+                            : formData.password.length >= 8 && /[0-9]/.test(formData.password)
+                            ? "w-2/3 bg-blue-500"
+                            : "w-1/3 bg-amber-500"
+                        }`}
+                      />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-600">
+                      {formData.password.length >= 10 && /[0-9]/.test(formData.password) && /[^A-Za-z0-9]/.test(formData.password)
+                        ? "Strong"
+                        : formData.password.length >= 8 && /[0-9]/.test(formData.password)
+                        ? "Good"
+                        : "Weak"}
+                    </span>
+                  </div>
+                )}
+              </div>
 
+            </div>
+
+            {/* ==================================
+                TERMS & PRIVACY CONSENT CHECKBOX
+            ================================== */}
+            <div className="flex items-start gap-3 pt-1">
+              <input
+                id="agree-terms"
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                disabled={loading}
+                className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              />
+              <label htmlFor="agree-terms" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
+                I agree to ElectroZone's{" "}
+                <Link to="/terms-of-service" target="_blank" className="text-blue-600 underline font-semibold hover:text-blue-700">
+                  Terms of Service
+                </Link>{" "}
+                and acknowledge the{" "}
+                <Link to="/privacy-policy" target="_blank" className="text-blue-600 underline font-semibold hover:text-blue-700">
+                  Privacy Policy
+                </Link>.
+              </label>
             </div>
 
             {/* ==================================

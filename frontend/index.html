@@ -1,14 +1,56 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <title>ElectroZone - Premium Electronics & Tech Hub</title>
+    <meta name="description" content="Shop flagship smartphones, laptops, audio gear, smart wearables, and gaming essentials at ElectroZone. Fast express shipping across India with official brand warranty." />
+    <meta name="keywords" content="electronics, smartphones, laptops, headphones, audio, gaming gear, smartwatches, gadgets, online shopping India" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="canonical" href="https://electrozone.com/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://electrozone.com/" />
+    <meta property="og:title" content="ElectroZone - Premium Electronics & Tech Hub" />
+    <meta property="og:description" content="Discover curated smartphones, laptops, wireless headphones, and smart tech accessories with fast delivery and official brand warranty." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&h=630&auto=format&fit=crop&q=80" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://electrozone.com/" />
+    <meta name="twitter:title" content="ElectroZone - Premium Electronics & Tech Hub" />
+    <meta name="twitter:description" content="Discover curated smartphones, laptops, wireless headphones, and smart tech accessories with fast delivery and official brand warranty." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&h=630&auto=format&fit=crop&q=80" />
+
+    <!-- Structured JSON-LD Organization Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ElectroZone",
+        "url": "https://electrozone.com",
+        "logo": "https://electrozone.com/favicon.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-9353796157",
+          "contactType": "Customer Support",
+          "areaServed": "IN",
+          "availableLanguage": ["English", "Hindi"]
+        },
+        "sameAs": [
+          "https://x.com/electrozone",
+          "https://facebook.com/electrozone",
+          "https://instagram.com/electrozone",
+          "https://linkedin.com/company/electrozone"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Note: Razorpay checkout.js is dynamically loaded on checkout only, avoiding background test ribbons on all pages -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

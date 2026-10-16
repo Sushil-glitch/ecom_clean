@@ -18,10 +18,13 @@ import {
   Share2,
   QrCode,
 } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { dispatchCartEvent, getValidCart, saveCart, getProductQuantity, updateProductQuantity } from "../../utils/cartUtils.js";
 import ShareProductModal from "../../components/ShareProductModal.jsx";
+import ProductCard from "../../components/ProductCard.jsx";
+import { STORE_CLAIMS } from "../../config/constants.js";
+import { formatPrice } from "../../utils/formatters.js";
 
 import { PRODUCT_API_URL, WISHLIST_API_URL } from "../../config/api.js";
 const API_URL = PRODUCT_API_URL;
@@ -35,10 +38,13 @@ const Shop = () => {
 
   const [products, setProducts] = useState([]);
 
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All");
   const [stockFilter, setStockFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("featured");
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "featured");
+  const [maxPrice, setMaxPrice] = useState(300000);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   const [wishlistIds, setWishlistIds] = useState([]);
   const [cartIds, setCartIds] = useState([]);
@@ -233,36 +239,19 @@ const Shop = () => {
   };
 
   // =====================================================
-  // CATEGORIES FROM DATABASE
+  // CATEGORIES - UNIQUE DERIVATION (NO DUPLICATE MULTI-CATEGORY OVERLAP)
   // =====================================================
 
   const isCategoryMatch = (productCategory, targetCategory) => {
     if (!targetCategory || targetCategory === "All" || targetCategory === "all") return true;
     if (!productCategory) return false;
-
-    const pCat = productCategory.toLowerCase().trim();
-    const tCat = targetCategory.toLowerCase().trim();
-
-    if (pCat === tCat) return true;
-
-    const pClean = pCat.replace(/[^a-z0-9]/g, "").replace(/s$/, "");
-    const tClean = tCat.replace(/[^a-z0-9]/g, "").replace(/s$/, "");
-
-    if (pClean === tClean) return true;
-    if (pClean.length >= 3 && tClean.length >= 3 && (pClean.includes(tClean) || tClean.includes(pClean))) return true;
-
-    const isPhoneP = pCat.includes("phone") || pCat.includes("mobile") || pCat.includes("smartphone");
-    const isPhoneT = tCat.includes("phone") || tCat.includes("mobile") || tCat.includes("smartphone");
-    if (isPhoneP && isPhoneT) return true;
-
-    return false;
+    return productCategory.toLowerCase().trim() === targetCategory.toLowerCase().trim();
   };
 
   const categories = useMemo(() => {
-    const defaultCats = ["Smartphones", "Electronics", "Books", "Gadgets", "Computer Accessories"];
-    const productCats = products.map((product) => product.category).filter(Boolean);
-    const combined = Array.from(new Set([...defaultCats, ...productCats]));
-    return ["All", ...combined];
+    const rawCategories = products.map((p) => p.category).filter(Boolean);
+    const unique = Array.from(new Set(rawCategories));
+    return ["All", ...unique];
   }, [products]);
 
   // =====================================================
@@ -306,21 +295,18 @@ const Shop = () => {
           matchesStock = stockNum <= 0;
         }
 
-        return matchesSearch && matchesCategory && matchesStock;
+        const pPrice = Number(product.price || 0);
+        const matchesPrice = pPrice <= maxPrice;
+
+        return matchesSearch && matchesCategory && matchesStock && matchesPrice;
       })
       .sort((a, b) => {
         if (sortBy === "price-low") {
-          return (
-            Number(a.price) -
-            Number(b.price)
-          );
+          return Number(a.price) - Number(b.price);
         }
 
         if (sortBy === "price-high") {
-          return (
-            Number(b.price) -
-            Number(a.price)
-          );
+          return Number(b.price) - Number(a.price);
         }
 
         return 0;
@@ -329,8 +315,14 @@ const Shop = () => {
     products,
     search,
     selectedCategory,
+    stockFilter,
+    maxPrice,
     sortBy,
   ]);
+
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
 
   // =====================================================
   // UI
@@ -353,7 +345,7 @@ const Shop = () => {
               Explore Our Store
             </h1>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">
-              Discover high-quality electronics, smart gadgets, books, and computer accessories with express shipping and 100% buyer protection.
+              Discover verified flagship smartphones, computing systems, and accessories backed by {STORE_CLAIMS.WARRANTY_CLAIM} and express shipping across India.
             </p>
           </div>
 
@@ -361,6 +353,7 @@ const Shop = () => {
             <button
               onClick={() => navigate(isLoggedIn ? "/client/wishlist" : "/login")}
               className="flex h-11 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20 active:scale-[0.98]"
+              aria-label="View wishlist"
             >
               <Heart
                 size={18}
@@ -370,8 +363,9 @@ const Shop = () => {
             </button>
 
             <button
-              onClick={() => navigate(isLoggedIn ? "/client/cart" : "/login")}
+              onClick={() => navigate("/cart")}
               className="flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 active:scale-[0.98]"
+              aria-label="View shopping cart"
             >
               <ShoppingCart size={18} />
               <span>Cart ({cartIds.length})</span>
@@ -406,37 +400,56 @@ const Shop = () => {
               <span className="text-xs font-semibold text-slate-500">Stock:</span>
               <select
                 value={stockFilter}
-                onChange={(e) => setStockFilter(e.target.value)}
+                onChange={(e) => {
+                  setStockFilter(e.target.value);
+                  setVisibleCount(12);
+                }}
                 className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                aria-label="Filter by stock status"
               >
-                <option value="all">All Items</option>
+                <option value="all">All Inventory</option>
                 <option value="instock">In Stock Only</option>
-                <option value="outofstock">Out of Stock</option>
+                <option value="outofstock">Include Out of Stock</option>
+              </select>
+            </div>
+
+            {/* PRICE FILTER */}
+            <div className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
+              <span className="text-xs font-semibold text-slate-500">Max Price:</span>
+              <select
+                value={maxPrice}
+                onChange={(e) => {
+                  setMaxPrice(Number(e.target.value));
+                  setVisibleCount(12);
+                }}
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                aria-label="Filter by maximum price"
+              >
+                <option value={300000}>All Prices</option>
+                <option value={10000}>Under ₹10,000</option>
+                <option value={30000}>Under ₹30,000</option>
+                <option value={75000}>Under ₹75,000</option>
+                <option value={150000}>Under ₹1,50,000</option>
               </select>
             </div>
 
             <div className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
               <SlidersHorizontal size={16} className="text-slate-400" />
-              <span className="text-xs font-semibold text-slate-500">Sort by:</span>
+              <span className="text-xs font-semibold text-slate-500">Sort:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => {
+                  setSortBy(e.target.value);
+                  setVisibleCount(12);
+                }}
                 className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                aria-label="Sort products by"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
               </select>
             </div>
-
-            <button
-              type="button"
-              onClick={fetchProducts}
-              className="flex h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-4 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98]"
-            >
-              <RefreshCw size={15} />
-              <span>Refresh</span>
-            </button>
           </div>
         </div>
 
@@ -494,157 +507,41 @@ const Shop = () => {
           </button>
         </div>
       ) : (
-        /* PRODUCTS GRID */
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredProducts.map((product) => {
-            const productId = product._id || product.id;
-            const isWishlisted = wishlistIds.includes(productId);
-            const inCart = cartIds.includes(productId);
-
-            return (
-              <div
-                key={productId}
-                className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-blue-200"
-              >
-                {/* PRODUCT CARD BODY */}
-                <div className="flex flex-1 flex-col">
-                  {/* IMAGE CONTAINER */}
-                  <div className="relative flex h-52 w-full items-center justify-center overflow-hidden bg-slate-50 p-4">
-                    {/* STOCK OVER OVERLAY BADGE */}
-                    {Number(product.stock) <= 0 ? (
-                      <span className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-lg bg-rose-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-                        <AlertTriangle size={12} /> Out of Stock
-                      </span>
-                    ) : Number(product.stock) <= 5 ? (
-                      <span className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-                        <AlertCircle size={12} /> Only {product.stock} Left!
-                      </span>
-                    ) : product.category ? (
-                      <span className="absolute left-3 top-3 z-10 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 shadow-sm backdrop-blur-md border border-slate-100">
-                        {product.category}
-                      </span>
-                    ) : null}
-
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        onClick={() => setViewingProduct(product)}
-                        className="max-h-full max-w-full object-contain cursor-pointer transition duration-500"
-                      />
-                    ) : (
-                      <Sparkles size={40} className="text-slate-300 opacity-60" />
-                    )}
-
-                    {/* QUICK VIEW, SHARE & WISHLIST ACTION BUTTONS */}
-                    <div className="absolute right-3 top-3 flex items-center gap-1.5 z-10">
-                      <button
-                        type="button"
-                        onClick={() => setViewingProduct(product)}
-                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/90 text-slate-700 shadow-sm backdrop-blur-md transition hover:bg-white active:scale-95 hover:text-blue-600"
-                        title="Quick view product details"
-                      >
-                        <Eye size={17} />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSharingProduct(product)}
-                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/90 text-slate-700 shadow-sm backdrop-blur-md transition hover:bg-white active:scale-95 hover:text-blue-600"
-                        title="Share product via Link or QR Code"
-                      >
-                        <Share2 size={17} />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => toggleWishlist(productId)}
-                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/90 text-slate-700 shadow-sm backdrop-blur-md transition hover:bg-white active:scale-95"
-                        aria-label="Toggle wishlist"
-                      >
-                        <Heart
-                          size={17}
-                          className={isWishlisted ? "fill-rose-500 text-rose-500" : "text-slate-400 hover:text-slate-600"}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* DETAILS */}
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3
-                      onClick={() => setViewingProduct(product)}
-                      className="text-base font-bold text-slate-900 line-clamp-1 cursor-pointer transition group-hover:text-blue-600"
-                    >
-                      {product.name}
-                    </h3>
-
-                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500 flex-grow">
-                      {product.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* FOOTER ACTION */}
-                <div className="mt-auto flex items-center justify-between border-t border-slate-100 p-4 bg-slate-50/50">
-                  <div>
-                    <span className="text-lg font-extrabold text-slate-900">
-                      ₹{Number(product.price || 0).toLocaleString("en-IN")}
-                    </span>
-
-                    {Number(product.originalPrice) > Number(product.price) && (
-                      <span className="ml-2 text-xs text-slate-400 line-through font-medium">
-                        ₹{Number(product.originalPrice).toLocaleString("en-IN")}
-                      </span>
-                    )}
-                  </div>
-
-                  {Number(product.stock) <= 0 ? (
-                    <button
-                      type="button"
-                      disabled
-                      className="cursor-not-allowed rounded-xl bg-slate-200 px-3.5 py-2 text-xs font-bold text-slate-400 shadow-sm"
-                    >
-                      Out of Stock
-                    </button>
-                  ) : !inCart ? (
-                    <button
-                      type="button"
-                      onClick={() => handleQuantityChange(productId, 1, Number(product.stock))}
-                      className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-95"
-                    >
-                      <ShoppingCart size={14} />
-                      <span>Add to Cart</span>
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-2 rounded-xl bg-blue-50 p-1 border border-blue-200">
-                      <button
-                        type="button"
-                        onClick={() => handleQuantityChange(productId, -1, Number(product.stock))}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-blue-600 shadow-xs hover:bg-blue-600 hover:text-white transition active:scale-90"
-                        title="Decrease Quantity"
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span className="min-w-6 text-center text-xs font-extrabold text-blue-900">
-                        {getProductQuantity(productId)}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleQuantityChange(productId, 1, Number(product.stock))}
-                        disabled={getProductQuantity(productId) >= Number(product.stock)}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs hover:bg-blue-700 transition disabled:opacity-50 active:scale-90"
-                        title="Increase Quantity"
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+        <div>
+        <div className="flex items-center justify-between pb-4 text-xs font-semibold text-slate-500">
+          <span>
+            Showing {Math.min(visibleCount, filteredProducts.length)} of {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+          </span>
+          {filteredProducts.length > 0 && selectedCategory !== "All" && (
+            <span className="text-blue-600 font-bold">Category: {selectedCategory}</span>
+          )}
         </div>
+
+        {/* PRODUCTS GRID REUSING ACCESSIBLE PRODUCTCARD */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {displayedProducts.map((product) => (
+            <ProductCard
+              key={product._id || product.id}
+              product={product}
+              onAddToCart={() => handleQuantityChange(product._id || product.id, 1, Number(product.stock))}
+              onViewDetails={(prod) => setViewingProduct(prod)}
+            />
+          ))}
+        </div>
+
+        {/* LOAD MORE PAGINATION CONTROL */}
+        {visibleCount < filteredProducts.length && (
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => setVisibleCount((prev) => prev + 12)}
+              className="inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-300 px-8 py-3.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-blue-400 hover:text-blue-600 transition active:scale-95"
+            >
+              <span>Load More Products ({filteredProducts.length - visibleCount} remaining)</span>
+            </button>
+          </div>
+        )}
+      </div>
       )}
 
       {/* =================================================

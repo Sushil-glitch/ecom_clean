@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /delivery
+Disallow: /client
+
+Sitemap: https://electrozone.com/sitemap.xml

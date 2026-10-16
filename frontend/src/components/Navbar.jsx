@@ -173,22 +173,23 @@ const Navbar = () => {
         <Link
           to="/"
           className="flex items-center gap-2.5 transition opacity-95 hover:opacity-100"
+          aria-label="ElectroZone - Home"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
             <Zap size={21} />
           </div>
           <div>
-            <h1 className="text-xl font-black tracking-tight text-slate-900 leading-none">
+            <span className="text-xl font-black tracking-tight text-slate-900 leading-none block">
               Electro<span className="text-blue-600">Zone</span>
-            </h1>
-            <p className="hidden text-[9px] font-extrabold uppercase tracking-widest text-slate-400 sm:block mt-0.5">
+            </span>
+            <span className="hidden text-[9px] font-extrabold uppercase tracking-widest text-slate-400 sm:block mt-0.5">
               Premium Tech Hub
-            </p>
+            </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links (ScrollSpy Linked) */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main menu">
           {navLinks.map((link) => {
             const active = isActiveLink(link);
             return (
@@ -198,7 +199,7 @@ const Navbar = () => {
                 onClick={(e) => handleNavClick(e, link)}
                 className={`rounded-xl px-3.5 py-2 text-sm font-medium transition-all ${
                   active
-                    ? "font-bold text-blue-600 bg-blue-50/80 border border-blue-100 shadow-xs"
+                    ? "font-bold text-blue-600 bg-blue-50/80 border border-blue-100 shadow-sm"
                     : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900"
                 }`}
               >
@@ -215,6 +216,7 @@ const Navbar = () => {
             type="button"
             onClick={toggleTheme}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-amber-500 active:scale-[0.98]"
+            aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             {isDark ? <Sun size={19} className="text-amber-400" /> : <Moon size={19} className="text-slate-600" />}
@@ -228,6 +230,7 @@ const Navbar = () => {
             type="button"
             onClick={() => navigate(isLoggedIn ? "/client/wishlist" : "/login")}
             className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-rose-600 active:scale-[0.98]"
+            aria-label={`Wishlist with ${wishlistCount} items`}
             title="Wishlist"
           >
             <Heart size={19} className={wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""} />
@@ -241,8 +244,9 @@ const Navbar = () => {
           {/* Cart Button */}
           <button
             type="button"
-            onClick={() => navigate(isLoggedIn ? "/client/cart" : "/cart")}
+            onClick={() => navigate("/cart")}
             className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-blue-600 active:scale-[0.98]"
+            aria-label={`Shopping cart with ${cartCount} items`}
             title="Shopping Cart"
           >
             <ShoppingCart size={19} />

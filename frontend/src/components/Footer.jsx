@@ -131,8 +131,8 @@ const Footer = () => {
                 <Headphones size={22} />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-slate-200">24/7 Priority Support</h4>
-                <p className="text-xs text-slate-500">Dedicated help center & live chat</p>
+                <h4 className="text-sm font-semibold text-slate-200">Priority Support Desk</h4>
+                <p className="text-xs text-slate-500">Mon–Sat, 9:00 AM – 8:00 PM IST</p>
               </div>
             </div>
           </div>
@@ -160,38 +160,38 @@ const Footer = () => {
             {/* Social Media Links */}
             <div className="pt-2 flex items-center gap-3">
               <a
-                href="https://facebook.com"
+                href="https://facebook.com/electrozone"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 transition hover:border-blue-500/50 hover:bg-blue-600 hover:text-white"
-                aria-label="Facebook"
+                aria-label="Follow ElectroZone on Facebook"
               >
                 <FacebookIcon />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/electrozone"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 transition hover:border-pink-500/50 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 hover:text-white"
-                aria-label="Instagram"
+                aria-label="Follow ElectroZone on Instagram"
               >
                 <InstagramIcon />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://x.com/electrozone"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 transition hover:border-sky-500/50 hover:bg-sky-500 hover:text-white"
-                aria-label="Twitter / X"
+                aria-label="Follow ElectroZone on X (formerly Twitter)"
               >
                 <TwitterIcon />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/company/electrozone"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 transition hover:border-blue-600/50 hover:bg-blue-700 hover:text-white"
-                aria-label="LinkedIn"
+                aria-label="Connect with ElectroZone on LinkedIn"
               >
                 <LinkedinIcon />
               </a>
@@ -287,7 +287,7 @@ const Footer = () => {
                     <Link to="/login" onClick={handleFooterLinkClick} className="transition hover:text-blue-400">Wishlist</Link>
                   </li>
                   <li>
-                    <Link to="/client/cart" onClick={handleFooterLinkClick} className="transition hover:text-blue-400">Shopping Cart</Link>
+                    <Link to="/cart" onClick={handleFooterLinkClick} className="transition hover:text-blue-400">Shopping Cart</Link>
                   </li>
                   <li>
                     <Link to="/login" onClick={handleFooterLinkClick} className="transition hover:text-blue-400">Saved Addresses</Link>
@@ -329,15 +329,27 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Seller Info & Legal compliance */}
+        <div className="mt-12 rounded-2xl border border-slate-900 bg-slate-900/40 p-4 text-[11px] text-slate-500 space-y-1">
+          <p><strong className="text-slate-400">Seller Entity:</strong> ElectroZone Retail Private Limited · Registered in Karnataka, India · <strong className="text-slate-400">GSTIN:</strong> 29AAAAA0000A1Z5</p>
+          <p><strong className="text-slate-400">Fulfillment Hub:</strong> 3rd Floor, Tech Park Campus, 80 Feet Road, 4th Block, Koramangala, Bengaluru 560034 · <strong className="text-slate-400">Grievance Desk:</strong> grievance@electrozone.com</p>
+        </div>
+
         {/* Bottom copyright line */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-900 pt-8 sm:flex-row text-xs text-slate-500">
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-slate-900 pt-6 sm:flex-row text-xs text-slate-500">
           <p>© {new Date().getFullYear()} ElectroZone Inc. All rights reserved.</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             <Link to="/privacy-policy" onClick={handleFooterLinkClick} className="hover:text-slate-400 transition">
               Privacy Policy
             </Link>
             <Link to="/terms-of-service" onClick={handleFooterLinkClick} className="hover:text-slate-400 transition">
               Terms of Service
+            </Link>
+            <Link to="/returns" onClick={handleFooterLinkClick} className="hover:text-slate-400 transition">
+              Returns & Refunds
+            </Link>
+            <Link to="/shipping" onClick={handleFooterLinkClick} className="hover:text-slate-400 transition">
+              Shipping Policy
             </Link>
             <Link to="/cookie-preferences" onClick={handleFooterLinkClick} className="hover:text-slate-400 transition">
               Cookie Preferences

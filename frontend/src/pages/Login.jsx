@@ -93,8 +93,12 @@ const Login = () => {
 
       toast.success(`Welcome back, ${user?.name || "User"}!`);
 
-      // REDIRECT BASED ON ROLE
-      if (role === "admin") {
+      // REDIRECT BASED ON QUERY PARAM OR ROLE
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectPath = searchParams.get("redirect");
+      if (redirectPath && redirectPath.startsWith("/")) {
+        navigate(redirectPath);
+      } else if (role === "admin") {
         navigate("/admin");
       } else if (role === "delivery") {
         navigate("/delivery");
@@ -248,6 +252,7 @@ const Login = () => {
                       ? "Hide password"
                       : "Show password"
                   }
+                  aria-pressed={showPassword}
                 >
                   {showPassword ? (
                     <EyeOff size={19} />
@@ -315,7 +320,7 @@ const Login = () => {
               to="/register"
               className="inline-block mt-2 text-sm font-semibold text-blue-600 hover:text-blue-700 transition"
             >
-              Create an account
+              Create Account
             </Link>
 
           </div>
@@ -329,9 +334,9 @@ const Login = () => {
 
           <Link
             to="/"
-            className="text-sm text-slate-500 hover:text-blue-600 transition"
+            className="text-sm text-slate-500 hover:text-blue-600 transition inline-flex items-center gap-1.5"
           >
-            ← Back to home
+            Back to Home
           </Link>
 
         </div>

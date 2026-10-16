@@ -125,94 +125,130 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
   return (
     <>
       <div
-        onClick={handleCardClick}
-        className="group flex cursor-pointer flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+        className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500"
       >
-        {/* IMAGE CONTAINER */}
-        <div className="relative mb-3 flex h-48 w-full items-center justify-center overflow-hidden rounded-xl bg-slate-50 p-2">
-          {/* STOCK STATUS BADGES */}
-          {stockNum <= 0 ? (
-            <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-rose-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-              <AlertTriangle size={11} /> Out of Stock
-            </span>
-          ) : stockNum <= 5 ? (
-            <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-              <AlertCircle size={11} /> Only {stockNum} Left
-            </span>
-          ) : (
-            <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-emerald-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
-              <CheckCircle2 size={11} /> In Stock
-            </span>
-          )}
-
-          {/* DISCOUNT BADGE */}
-          {discountPercent > 0 && (
-            <span className="absolute right-2.5 top-2.5 z-10 rounded-lg bg-blue-600 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-md">
-              {discountPercent}% OFF
-            </span>
-          )}
-
-          {/* SHARE BUTTON */}
-          <button
-            type="button"
+        <div>
+          {/* IMAGE CONTAINER WITH ACCESSIBLE LINK */}
+          <Link
+            to={`/shop?product=${productId}`}
             onClick={(e) => {
-              e.stopPropagation();
-              setShareModalOpen(true);
+              if (onViewDetails) {
+                e.preventDefault();
+                onViewDetails(product);
+                setShowModal(true);
+              }
             }}
-            className="absolute bottom-2.5 left-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 hover:bg-blue-600 hover:text-white shadow-md transition"
-            title="Share Product via Link or QR"
+            className="relative mb-3 flex h-48 w-full items-center justify-center overflow-hidden rounded-xl bg-slate-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label={`View details for ${product.name}`}
           >
-            <Share2 size={14} />
-          </button>
+            {/* STOCK STATUS BADGES */}
+            {stockNum <= 0 ? (
+              <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-rose-700 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
+                <AlertTriangle size={12} /> Out of Stock
+              </span>
+            ) : stockNum <= 5 ? (
+              <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-600 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
+                <AlertCircle size={12} /> Only {stockNum} Left
+              </span>
+            ) : (
+              <span className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-emerald-700 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+                <CheckCircle2 size={12} /> In Stock
+              </span>
+            )}
 
-          {/* WISHLIST BUTTON FOR CLIENT */}
-          {!isAdmin && (
+            {/* DISCOUNT BADGE (Hidden on out-of-stock items) */}
+            {discountPercent > 0 && stockNum > 0 && (
+              <span className="absolute right-2.5 top-2.5 z-10 rounded-lg bg-blue-600 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white shadow-md">
+                {discountPercent}% OFF
+              </span>
+            )}
+
+            {/* PRODUCT IMAGE */}
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80";
+                }}
+                className={`max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105 ${
+                  stockNum <= 0 ? "opacity-60 grayscale" : ""
+                }`}
+              />
+            ) : (
+              <div className="text-slate-400 font-medium text-xs">No image</div>
+            )}
+          </Link>
+
+          {/* QUICK ACTION BUTTONS (SEPARATE FROM CARD LINK) */}
+          <div className="flex items-center justify-between mb-2">
             <button
               type="button"
-              onClick={handleWishlistClick}
-              className={`absolute bottom-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition ${
-                inWishlist
-                  ? "bg-rose-500 text-white hover:bg-rose-600"
-                  : "bg-white/90 text-slate-400 hover:bg-white hover:text-rose-500"
-              }`}
-              title={inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-            >
-              <Heart size={15} className={inWishlist ? "fill-current" : ""} />
-            </button>
-          )}
-
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.name}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80";
+              onClick={(e) => {
+                e.stopPropagation();
+                setShareModalOpen(true);
               }}
-              className="max-h-full max-w-full object-contain transition duration-500"
-            />
-          ) : (
-            <div className="text-slate-300 font-medium text-xs">No image</div>
-          )}
-        </div>
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm transition"
+              aria-label={`Share ${product.name}`}
+              title="Share product"
+            >
+              <Share2 size={14} />
+            </button>
 
-        {/* CATEGORY & STAR RATING */}
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
-            {product.category || "Product"}
-          </span>
-          <div className="flex items-center gap-1 text-[11px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-full">
-            <Star size={11} className="fill-amber-400 text-amber-500" />
-            <span>{product.rating || "4.8"}</span>
-            <span className="text-slate-400 font-normal">({product.reviewsCount || "124"})</span>
+            {!isAdmin && (
+              <button
+                type="button"
+                onClick={handleWishlistClick}
+                className={`flex h-8 w-8 items-center justify-center rounded-xl shadow-sm transition border ${
+                  inWishlist
+                    ? "bg-rose-500 text-white border-rose-500 hover:bg-rose-600"
+                    : "bg-white text-slate-500 border-slate-200 hover:bg-rose-50 hover:text-rose-500"
+                }`}
+                aria-label={inWishlist ? `Remove ${product.name} from Wishlist` : `Add ${product.name} to Wishlist`}
+                aria-pressed={inWishlist}
+                title={inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+              >
+                <Heart size={15} className={inWishlist ? "fill-current" : ""} />
+              </button>
+            )}
           </div>
+
+          {/* CATEGORY & STAR RATING */}
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+              {product.category || "Product"}
+            </span>
+            <div className="flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-full">
+              <Star size={12} className="fill-amber-400 text-amber-500" />
+              <span>{product.rating || "4.8"}</span>
+              <span className="text-slate-500 font-normal">({product.reviewsCount || "120+"})</span>
+            </div>
+          </div>
+
+          {/* TITLE LINK */}
+          <h3 className="mt-2 line-clamp-2 min-h-[2.5rem] text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-600 transition" title={product.name}>
+            <Link
+              to={`/shop?product=${productId}`}
+              onClick={(e) => {
+                if (onViewDetails) {
+                  e.preventDefault();
+                  onViewDetails(product);
+                  setShowModal(true);
+                }
+              }}
+              className="hover:underline focus:outline-none focus:text-blue-600"
+            >
+              {product.name}
+            </Link>
+          </h3>
+
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
+            {product.description}
+          </p>
         </div>
-
-        <h3 className="mt-1 line-clamp-1 text-base font-bold text-slate-900">{product.name}</h3>
-
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500 flex-grow">
-          {product.description}
-        </p>
 
         {/* PRICE & ACTION */}
         <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
@@ -222,7 +258,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                 ₹{priceNum.toLocaleString("en-IN")}
               </span>
               {origPriceNum > priceNum && (
-                <span className="text-xs font-semibold text-slate-400 line-through">
+                <span className="text-xs font-semibold text-slate-500 line-through">
                   ₹{origPriceNum.toLocaleString("en-IN")}
                 </span>
               )}
@@ -234,7 +270,8 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
               <button
                 type="button"
                 disabled
-                className="cursor-not-allowed rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-400"
+                className="cursor-not-allowed rounded-xl bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-500 border border-slate-200"
+                aria-label={`${product.name} is out of stock`}
               >
                 Out of Stock
               </button>
@@ -242,7 +279,8 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
               <button
                 type="button"
                 onClick={handleIncrementQuantity}
-                className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-95"
+                className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-95 focus:ring-2 focus:ring-blue-500"
+                aria-label={`Add ${product.name} to cart`}
               >
                 <ShoppingCart size={14} />
                 <span>Add to Cart</span>
@@ -255,7 +293,8 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                 <button
                   type="button"
                   onClick={handleDecrementQuantity}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-blue-600 shadow-xs hover:bg-blue-600 hover:text-white transition active:scale-90"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-blue-600 shadow-sm hover:bg-blue-600 hover:text-white transition active:scale-90"
+                  aria-label="Decrease quantity"
                   title="Decrease Quantity"
                 >
                   <Minus size={14} />
@@ -267,7 +306,8 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                   type="button"
                   onClick={handleIncrementQuantity}
                   disabled={cartQty >= stockNum}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs hover:bg-blue-700 transition disabled:opacity-50 active:scale-90"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition disabled:opacity-50 active:scale-90"
+                  aria-label="Increase quantity"
                   title="Increase Quantity"
                 >
                   <Plus size={14} />
@@ -279,6 +319,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
               type="button"
               onClick={handleCardClick}
               className="flex items-center gap-1.5 rounded-xl bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-600 hover:text-white transition shadow-sm"
+              aria-label={`View details of ${product.name}`}
             >
               <Eye size={14} />
               <span>View</span>
