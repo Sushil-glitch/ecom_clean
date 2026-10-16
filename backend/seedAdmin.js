@@ -4,9 +4,19 @@
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const dotenv = require("dotenv");
+const path = require("path");
+const dns = require("dns");
 
-dotenv.config();
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+try {
+  const currentServers = dns.getServers();
+  if (!currentServers || currentServers.length === 0 || currentServers.includes("127.0.0.1")) {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  }
+} catch (dnsErr) {
+  console.warn("Could not set custom DNS fallback:", dnsErr.message);
+}
 
 const User = require("./models/User");
 
@@ -20,7 +30,11 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@12345";
 
 const run = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/ecommerce";
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      console.error("ERROR: MONGO_URI is missing from your .env file!");
+      process.exit(1);
+    }
     await mongoose.connect(mongoUri);
     console.log("MongoDB connected successfully");
 

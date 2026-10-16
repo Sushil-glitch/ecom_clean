@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const path = require("path");
+const dns = require("dns");
 
-dotenv.config({ path: "./.env" });
+// Load .env relative to this backend directory
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+// Ensure Node's c-ares DNS resolver can resolve MongoDB Atlas SRV records on Windows
+try {
+  const currentServers = dns.getServers();
+  if (!currentServers || currentServers.length === 0 || currentServers.includes("127.0.0.1")) {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  }
+} catch (dnsErr) {
+  console.warn("Could not set custom DNS fallback:", dnsErr.message);
+}
 
 const Product = require("./models/Product");
 const User = require("./models/User");
@@ -37,7 +49,7 @@ const sampleProducts = [
     price: 349,
     originalPrice: 599,
     image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
-    stock: 0,
+    stock: 25,
     isActive: true,
   },
   {
@@ -87,7 +99,7 @@ const sampleProducts = [
     price: 479,
     originalPrice: 799,
     image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=600&auto=format&fit=crop&q=80",
-    stock: 0,
+    stock: 20,
     isActive: true,
   },
   {
@@ -245,7 +257,7 @@ const sampleProducts = [
     price: 92999,
     originalPrice: 108999,
     image: "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
-    stock: 0,
+    stock: 15,
     isActive: true,
   },
   {
@@ -322,24 +334,16 @@ const sampleProducts = [
 
 const seed = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/ecommerce";
-    await mongoose.connect(mongoUri);
-    console.log("MongoDB connected successfully for product seeding.");
-
-    let adminUser = await User.findOne({ role: "admin" });
-    if (!adminUser) {
-      const bcrypt = require("bcryptjs");
-      const hashedPassword = await bcrypt.hash("Admin@12345", 10);
-      adminUser = await User.create({
-        name: "Admin",
-        email: "admin@myapp.com",
-        contact: "9999999999",
-        password: hashedPassword,
-        role: "admin",
-      });
-      console.log("Created admin user for seeding.");
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      console.error("ERROR: MONGO_URI is missing from your .env file!");
+      process.exit(1);
     }
-    const adminId = adminUser._id;
+    await mongoose.connect(mongoUri);
+    console.log("MongoDB connected successfully to " + mongoose.connection.name + " for seeding categories.");
+
+    const adminUser = (await User.findOne({ role: "admin" })) || (await User.findOne({}));
+    const adminId = adminUser ? adminUser._id : null;
 
     let addedCount = 0;
 

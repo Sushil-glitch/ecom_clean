@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const path = require("path");
+const dns = require("dns");
 
-dotenv.config({ path: "./.env" });
+// Load .env relative to this backend directory
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+// Ensure Node's c-ares DNS resolver can resolve MongoDB Atlas SRV records on Windows
+try {
+  const currentServers = dns.getServers();
+  if (!currentServers || currentServers.length === 0 || currentServers.includes("127.0.0.1")) {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  }
+} catch (dnsErr) {
+  console.warn("Could not set custom DNS fallback:", dnsErr.message);
+}
 
 const Coupon = require("./models/Coupon");
 
@@ -42,7 +54,12 @@ const sampleCoupons = [
 
 async function seedCoupons() {
   try {
-    const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mern-auth-app";
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      console.error("ERROR: MONGO_URI is missing from your .env file!");
+      process.exit(1);
+    }
+
     await mongoose.connect(mongoUri);
     console.log("Connected to MongoDB for coupon seeding...");
 
@@ -56,6 +73,7 @@ async function seedCoupons() {
     }
 
     console.log("Coupons seeded successfully!");
+    await mongoose.disconnect();
     process.exit(0);
   } catch (error) {
     console.error("Coupon seeding error:", error);

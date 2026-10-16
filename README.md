@@ -101,17 +101,42 @@ git push -u origin main
 ## 💻 Local Development Setup
 
 ```bash
-# Backend Setup
+# 1. Backend Setup
 cd backend
 npm install
-npm start
+cp .env.example .env     # Configure MONGO_URI and JWT_SECRET
+npm run dev
 
-# Frontend Setup (in a new terminal)
+# 2. Database Seeding (Non-destructive)
+npm run seed:admin       # Creates/verifies Admin account
+npm run seed:products    # Seeds flagship ElectroZone products
+npm run seed:all-products# Seeds Books, Electronics, and Gadgets
+npm run seed:coupons     # Seeds DEMO03, WELCOME10, FLAT100
+npm run seed:users       # Seeds test client & delivery accounts
+
+# 3. Frontend Setup (in a new terminal)
 cd frontend
 npm install
+cp .env.example .env     # Points to http://localhost:5000/api
 npm run dev
 ```
 
 - **Frontend App**: `http://localhost:5173`
 - **Backend API**: `http://localhost:5000`
-- **Default Promo Coupon**: `DEMO03` (20% OFF)
+
+---
+
+## 🔑 Pre-Configured Demo Credentials
+
+| Role | Email | Password | Features Accessible |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin@myapp.com` | `Admin@12345` | Control Center, Inventory Restock, Revenue Analytics, Sales CSV Export |
+| **Customer / Client** | `client.test@electrozone.com` | `Client@12345` | Storefront, Cart, Wishlist, Order Placement, Live Order Tracking |
+| **Delivery Driver** | `driver.test@electrozone.com` | `Driver@12345` | Dispatch Dashboard, OTP Verification, GPS Navigation, Wallet & Payouts |
+
+### 🎟️ Active Demo Coupons
+
+* `DEMO03` — **20% OFF** (up to ₹500 discount)
+* `WELCOME10` — **10% OFF** (up to ₹200 discount)
+* `FLAT100` — **Flat ₹100 OFF** on orders above ₹499
+
