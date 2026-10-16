@@ -26,6 +26,7 @@ import CookiePreferences from "./pages/CookiePreferences.jsx";
 import Contact from "./pages/Contact.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import CookieBanner from "./components/CookieBanner.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
 // =====================================================
 // ADMIN
@@ -249,16 +250,17 @@ const MaintenanceGuard = ({ children }) => {
 function App() {
   return (
     <MaintenanceGuard>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-xl focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-xs focus:font-bold focus:text-white focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-white"
-      >
-        Skip to main content
-      </a>
-      <ScrollToTop />
-      <ToastContainer />
-      <CookieBanner />
-      <Routes>
+      <CartProvider>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-xl focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-xs focus:font-bold focus:text-white focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-white"
+        >
+          Skip to main content
+        </a>
+        <ScrollToTop />
+        <ToastContainer />
+        <CookieBanner />
+        <Routes>
 
       {/* =================================================
           HOME
@@ -579,6 +581,7 @@ function App() {
       />
 
     </Routes>
+      </CartProvider>
     </MaintenanceGuard>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
 import {
   ShoppingCart,
   AlertTriangle,
@@ -20,6 +21,7 @@ import ShareProductModal from "./ShareProductModal.jsx";
 // Displays a single product's image, name, price, original price, discount, category, stock status and action buttons
 const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onToggleWishlist }) => {
   const productId = product?._id || product?.id;
+  const { showCartNotification } = useCart();
   const [inCart, setInCart] = useState(false);
   const [cartQty, setCartQty] = useState(0);
   const [inWishlist, setInWishlist] = useState(false);
@@ -96,6 +98,9 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
       const updatedQty = updateProductQuantity(productId, 1, stockNum);
       setCartQty(updatedQty);
       setInCart(updatedQty > 0);
+      if (showCartNotification) {
+        showCartNotification("Added to Cart", product?.name, updatedQty);
+      }
       if (onAddToCart) onAddToCart(productId, true);
     } catch (err) {
       console.error(err);
@@ -109,6 +114,9 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
       const updatedQty = updateProductQuantity(productId, -1, stockNum);
       setCartQty(updatedQty);
       setInCart(updatedQty > 0);
+      if (showCartNotification) {
+        showCartNotification(updatedQty > 0 ? "Cart updated" : "Removed from cart", product?.name, updatedQty);
+      }
       if (onAddToCart) onAddToCart(productId, updatedQty > 0);
     } catch (err) {
       console.error(err);
@@ -119,8 +127,9 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
     if (e) e.stopPropagation();
     if (onViewDetails) {
       onViewDetails(product);
+    } else {
+      setShowModal(true);
     }
-    setShowModal(true);
   };
 
   return (
@@ -136,6 +145,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
               if (onViewDetails) {
                 e.preventDefault();
                 onViewDetails(product);
+              } else {
                 setShowModal(true);
               }
             }}
@@ -352,7 +362,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                 <button
                   type="button"
                   onClick={() => setShareModalOpen(true)}
-                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition shadow-xs"
+                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition shadow-sm"
                   title="Share Product"
                 >
                   <Share2 size={14} />
@@ -453,7 +463,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                     <button
                       type="button"
                       onClick={handleDecrementQuantity}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-600 shadow-xs hover:bg-blue-600 hover:text-white transition active:scale-90"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-600 shadow-sm hover:bg-blue-600 hover:text-white transition active:scale-90"
                     >
                       <Minus size={15} />
                     </button>
@@ -464,7 +474,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
                       type="button"
                       onClick={handleIncrementQuantity}
                       disabled={cartQty >= stockNum}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs hover:bg-blue-700 transition disabled:opacity-50 active:scale-90"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition disabled:opacity-50 active:scale-90"
                     >
                       <Plus size={15} />
                     </button>

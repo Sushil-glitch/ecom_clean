@@ -678,7 +678,7 @@ const Cart = () => {
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-blue-600">Client Portal</p>
+          <p className="text-sm font-semibold text-blue-600">Secure Shopping Cart</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">My Cart</h1>
           <p className="mt-1 text-sm text-slate-500">Review the products you want to purchase.</p>
         </div>
@@ -815,7 +815,7 @@ const Cart = () => {
                       type="button"
                       onClick={handleApplyCoupon}
                       disabled={validatingCoupon || !couponInput.trim()}
-                      className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 transition disabled:opacity-50"
+                      className="rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-slate-800 transition disabled:opacity-50"
                     >
                       {validatingCoupon ? "Applying..." : "Apply"}
                     </button>
@@ -952,183 +952,198 @@ const Cart = () => {
 
             {/* STEP 1: SHIPPING ADDRESS */}
             {checkoutStep === 1 && (
-              <div className="p-6 space-y-5">
-                {/* SAVED ADDRESSES SELECTOR */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <MapPin size={15} className="text-blue-600" />
-                      Select Delivery Address
-                    </h4>
+              <>
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+                  {/* SAVED ADDRESSES SELECTOR */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                        <MapPin size={15} className="text-blue-600" />
+                        Select Delivery Address
+                      </h4>
 
-                    <button
-                      type="button"
-                      onClick={openAddCheckoutAddressModal}
-                      className="flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 transition"
-                    >
-                      <Plus size={14} /> Add New Address
-                    </button>
-                  </div>
-
-                  {loadingAddresses ? (
-                    <div className="flex items-center justify-center p-8 rounded-xl bg-slate-50">
-                      <Loader2 size={24} className="animate-spin text-blue-600" />
-                    </div>
-                  ) : savedAddresses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-1">
-                      {savedAddresses.map((addr) => {
-                        const addrId = addr._id || addr.id;
-                        const isSelected = selectedAddressId === addrId;
-
-                        return (
-                          <div
-                            key={addrId}
-                            onClick={() => handleSelectAddress(addr)}
-                            className={`relative cursor-pointer flex flex-col justify-between rounded-xl p-4 border transition ${
-                              isSelected
-                                ? "bg-blue-50/50 text-blue-900 border-blue-500 ring-1 ring-blue-500 font-semibold"
-                                : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
-                            }`}
-                          >
-                            <div>
-                              <div className="flex items-center justify-between mb-1.5">
-                                <div className="flex items-center gap-1.5">
-                                  {addr.label === "Work" ? (
-                                    <Building2 size={15} className="text-blue-600" />
-                                  ) : (
-                                    <HomeIcon size={15} className="text-blue-600" />
-                                  )}
-                                  <span className="text-xs font-bold uppercase text-slate-800">
-                                    {addr.label || "HOME"}
-                                  </span>
-                                </div>
-
-                                {addr.isDefault && (
-                                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                                    Default
-                                  </span>
-                                )}
-                              </div>
-
-                              <p className="text-xs font-bold text-slate-900">{addr.fullName}</p>
-                              {addr.phone && (
-                                <p className="text-[11px] text-slate-500 font-medium">{addr.phone}</p>
-                              )}
-                              <p className="text-xs text-slate-600 line-clamp-1 mt-1">
-                                {addr.addressLine || addr.street}
-                              </p>
-                              <p className="text-xs text-slate-600 font-medium">
-                                {addr.city}, {addr.state} - {addr.pincode || addr.zip}
-                              </p>
-                            </div>
-
-                            <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-end gap-2 text-[11px]">
-                              <button
-                                type="button"
-                                onClick={(e) => openEditCheckoutAddressModal(e, addr)}
-                                className="font-semibold text-slate-600 hover:text-blue-600"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                type="button"
-                                onClick={(e) => handleDeleteCheckoutAddress(e, addrId)}
-                                className="font-semibold text-rose-500 hover:text-rose-700"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="rounded-xl border border-slate-200 p-5 text-center bg-slate-50/50">
-                      <p className="text-xs text-slate-500 font-medium">No saved addresses found.</p>
                       <button
                         type="button"
                         onClick={openAddCheckoutAddressModal}
-                        className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline"
+                        className="flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 transition"
                       >
-                        <Plus size={14} /> Add your first delivery address
+                        <Plus size={14} /> Add New Address
                       </button>
                     </div>
-                  )}
+
+                    {loadingAddresses ? (
+                      <div className="flex items-center justify-center p-8 rounded-xl bg-slate-50">
+                        <Loader2 size={24} className="animate-spin text-blue-600" />
+                      </div>
+                    ) : savedAddresses.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-64 overflow-y-auto pr-1">
+                        {savedAddresses.map((addr) => {
+                          const addrId = addr._id || addr.id;
+                          const isSelected = selectedAddressId === addrId;
+
+                          return (
+                            <div
+                              key={addrId}
+                              onClick={() => handleSelectAddress(addr)}
+                              className={`relative cursor-pointer flex flex-col justify-between rounded-2xl p-4 border transition ${
+                                isSelected
+                                  ? "bg-blue-50/60 text-blue-900 border-blue-500 ring-2 ring-blue-500/20 font-semibold shadow-sm"
+                                  : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                              }`}
+                            >
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-1.5">
+                                    {addr.label === "Work" ? (
+                                      <Building2 size={15} className="text-blue-600" />
+                                    ) : (
+                                      <HomeIcon size={15} className="text-blue-600" />
+                                    )}
+                                    <span className="text-xs font-bold uppercase text-slate-800">
+                                      {addr.label || "HOME"}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-2">
+                                    {addr.isDefault && (
+                                      <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                                        Default
+                                      </span>
+                                    )}
+                                    <span
+                                      className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                                        isSelected
+                                          ? "border-blue-600 bg-blue-600 text-white"
+                                          : "border-slate-300"
+                                      }`}
+                                    >
+                                      {isSelected && <Check size={10} className="stroke-[3]" />}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <p className="text-xs font-bold text-slate-900">{addr.fullName}</p>
+                                {addr.phone && (
+                                  <p className="text-[11px] text-slate-500 font-medium">{addr.phone}</p>
+                                )}
+                                <p className="text-xs text-slate-600 line-clamp-2 mt-1 leading-snug">
+                                  {addr.addressLine || addr.street}
+                                </p>
+                                <p className="text-xs text-slate-600 font-medium mt-0.5">
+                                  {addr.city}, {addr.state} - {addr.pincode || addr.zip}
+                                </p>
+                              </div>
+
+                              <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-end gap-3 text-[11px]">
+                                <button
+                                  type="button"
+                                  onClick={(e) => openEditCheckoutAddressModal(e, addr)}
+                                  className="font-bold text-slate-600 hover:text-blue-600 transition"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleDeleteCheckoutAddress(e, addrId)}
+                                  className="font-bold text-rose-500 hover:text-rose-700 transition"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-slate-200 p-6 text-center bg-slate-50/50">
+                        <MapPin size={24} className="mx-auto text-slate-400 mb-2" />
+                        <p className="text-xs text-slate-500 font-medium">No saved addresses found.</p>
+                        <button
+                          type="button"
+                          onClick={openAddCheckoutAddressModal}
+                          className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline"
+                        >
+                          <Plus size={14} /> Add delivery address
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* FORM INPUTS */}
+                  <div className="space-y-3.5 pt-2 border-t border-slate-100">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Recipient Information
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+                        <input
+                          type="text"
+                          value={shippingInfo.name}
+                          onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
+                          placeholder="John Doe"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400 shadow-sm"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Contact Phone (10 digits) *</label>
+                        <input
+                          type="text"
+                          maxLength={10}
+                          value={shippingInfo.contact}
+                          onChange={(e) => setShippingInfo({ ...shippingInfo, contact: e.target.value.replace(/\D/g, "") })}
+                          placeholder="9876543210"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400 shadow-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Street Address *</label>
+                      <input
+                        type="text"
+                        value={shippingInfo.address}
+                        onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
+                        placeholder="Flat/House No, Building, Street, Area"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400 shadow-sm"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">City *</label>
+                        <input
+                          type="text"
+                          value={shippingInfo.city}
+                          onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                          placeholder="Bengaluru"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400 shadow-sm"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">PIN Code (6 digits) *</label>
+                        <input
+                          type="text"
+                          maxLength={6}
+                          value={shippingInfo.pincode}
+                          onChange={(e) => setShippingInfo({ ...shippingInfo, pincode: e.target.value.replace(/\D/g, "") })}
+                          placeholder="560034"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* FORM INPUTS */}
-                <div className="space-y-3.5 pt-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                    Recipient Information
-                  </h4>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
-                      <input
-                        type="text"
-                        value={shippingInfo.name}
-                        onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
-                        placeholder="John Doe"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">Contact Phone (10 digits) *</label>
-                      <input
-                        type="text"
-                        maxLength={10}
-                        value={shippingInfo.contact}
-                        onChange={(e) => setShippingInfo({ ...shippingInfo, contact: e.target.value.replace(/\D/g, "") })}
-                        placeholder="9876543210"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Street Address *</label>
-                    <input
-                      type="text"
-                      value={shippingInfo.address}
-                      onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
-                      placeholder="123 Main Street, Flat / Suite"
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">City</label>
-                      <input
-                        type="text"
-                        value={shippingInfo.city}
-                        onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
-                        placeholder="Mumbai"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">PIN Code (6 digits)</label>
-                      <input
-                        type="text"
-                        maxLength={6}
-                        value={shippingInfo.pincode}
-                        onChange={(e) => setShippingInfo({ ...shippingInfo, pincode: e.target.value.replace(/\D/g, "") })}
-                        placeholder="400001"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 flex justify-end gap-3">
+                {/* STICKY FOOTER */}
+                <div className="shrink-0 border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-between gap-3">
                   <button
                     type="button"
                     onClick={() => setIsCheckoutOpen(false)}
-                    className="rounded-xl bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                    className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 transition shadow-sm"
                   >
                     Cancel
                   </button>
@@ -1145,40 +1160,42 @@ const Cart = () => {
                       }
                       setCheckoutStep(2);
                     }}
-                    className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-700 transition"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-500/20 transition active:scale-95"
                   >
-                    Proceed to Payment <ChevronRight size={15} />
+                    <span>Proceed to Payment</span>
+                    <ChevronRight size={15} />
                   </button>
                 </div>
-              </div>
+              </>
             )}
 
             {/* STEP 2: PAYMENT METHOD */}
             {checkoutStep === 2 && (
-              <div className="p-6 space-y-6">
-                {/* PAYMENT METHOD SELECTOR */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                      Select Payment Method
-                    </label>
-                    <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
-                      <ShieldCheck size={13} /> 256-Bit SSL Encrypted
-                    </span>
-                  </div>
+              <>
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+                  {/* PAYMENT METHOD SELECTOR */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Select Payment Method
+                      </label>
+                      <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+                        <ShieldCheck size={13} /> 256-Bit SSL Encrypted
+                      </span>
+                    </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {/* RAZORPAY */}
-                    {paymentSettings.enableRazorpay !== false && (
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod("Razorpay")}
-                        className={`relative flex flex-col justify-between rounded-2xl p-4 border text-left transition-all duration-200 ${
-                          paymentMethod === "Razorpay"
-                            ? "bg-blue-50/70 border-blue-500 ring-2 ring-blue-500/80 shadow-sm"
-                            : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/70"
-                        }`}
-                      >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {/* RAZORPAY */}
+                      {paymentSettings.enableRazorpay !== false && (
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod("Razorpay")}
+                          className={`relative flex flex-col justify-between rounded-2xl p-4 border text-left transition-all duration-200 min-h-[140px] ${
+                            paymentMethod === "Razorpay"
+                              ? "bg-blue-50/70 border-blue-500 ring-2 ring-blue-500/80 shadow-sm"
+                              : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/70"
+                          }`}
+                        >
                         <div className="flex items-center justify-between mb-3">
                           <div className={`flex h-10 w-10 items-center justify-center rounded-xl shadow-xs transition-colors ${
                             paymentMethod === "Razorpay" ? "bg-blue-600 text-white" : "bg-blue-50 text-blue-600"
@@ -1349,7 +1366,7 @@ const Cart = () => {
                 {/* METHOD SPECIFIC FORMS */}
                 {/* 0. RAZORPAY FORM */}
                 {paymentMethod === "Razorpay" && (
-                  <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50/70 via-white to-indigo-50/50 p-5 space-y-4 shadow-xs">
+                  <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50/70 via-white to-indigo-50/50 p-5 space-y-4 shadow-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-blue-100">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
@@ -1366,28 +1383,28 @@ const Cart = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 rounded-xl bg-white border border-blue-200 px-3 py-1.5 shadow-2xs">
+                      <div className="flex items-center gap-2 rounded-xl bg-white border border-blue-200 px-3 py-1.5 shadow-sm">
                         <span className="text-xs text-slate-400 font-medium">Payable:</span>
                         <span className="text-sm font-extrabold text-blue-700">₹{grandTotal.toFixed(2)}</span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs text-slate-600">
-                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-2xs">
+                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
                         <Check size={15} className="text-emerald-500 shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-slate-800">All UPI Apps</p>
                           <p className="text-[11px] text-slate-400">GPay, PhonePe, Paytm, BHIM</p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-2xs">
+                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
                         <Check size={15} className="text-emerald-500 shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-slate-800">Cards & EMI</p>
                           <p className="text-[11px] text-slate-400">Visa, Mastercard, RuPay</p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-2xs">
+                      <div className="flex items-start gap-2 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
                         <Check size={15} className="text-emerald-500 shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-slate-800">Instant Verification</p>
@@ -1581,16 +1598,20 @@ const Cart = () => {
                   </div>
                 )}
 
-                {/* MODAL ACTIONS */}
-                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                </div>
+
+                {/* STICKY FOOTER FOR STEP 2 */}
+                <div className="shrink-0 border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-between gap-3">
                   <button
+                    type="button"
                     onClick={() => setCheckoutStep(1)}
-                    className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                    className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition shadow-sm"
                   >
                     Back to Address
                   </button>
 
                   <button
+                    type="button"
                     onClick={handlePlaceOrder}
                     disabled={
                       isSubmittingOrder ||
@@ -1599,7 +1620,7 @@ const Cart = () => {
                         !paymentSettings.enableCard &&
                         !paymentSettings.enableCod)
                     }
-                    className={`rounded-xl px-6 py-3 text-xs font-bold text-white shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`rounded-xl px-6 py-2.5 text-xs font-bold text-white shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                       paymentMethod === "Razorpay"
                         ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/20"
                         : paymentMethod === "COD"
@@ -1609,12 +1630,12 @@ const Cart = () => {
                   >
                     {isSubmittingOrder ? (
                       <>
-                        <Loader2 size={17} className="animate-spin" />
+                        <Loader2 size={16} className="animate-spin" />
                         {paymentMethod === "Razorpay" ? "Launching Razorpay Modal..." : "Creating Order..."}
                       </>
                     ) : (
                       <>
-                        {paymentMethod === "Razorpay" ? <Zap size={16} className="fill-white" /> : <ShieldCheck size={16} />}
+                        {paymentMethod === "Razorpay" ? <Zap size={15} className="fill-white" /> : <ShieldCheck size={15} />}
                         {paymentMethod === "Razorpay"
                           ? `Pay via Razorpay • ₹${grandTotal.toFixed(2)}`
                           : paymentMethod === "COD"
@@ -1624,12 +1645,12 @@ const Cart = () => {
                     )}
                   </button>
                 </div>
-              </div>
+              </>
             )}
 
             {/* STEP 3: ORDER SUCCESS & CONFIRMATION */}
             {checkoutStep === 3 && placedOrder && (
-              <div className="p-6 sm:p-8 text-center space-y-6">
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-6">
                 {/* HERO BADGE */}
                 {placedOrder.paymentStatus === "Completed" || placedOrder.orderStatus === "Confirmed" ? (
                   <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 animate-in zoom-in duration-200">
