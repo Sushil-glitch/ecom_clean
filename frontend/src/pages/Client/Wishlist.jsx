@@ -221,8 +221,8 @@ const Wishlist = () => {
           </button>
         </div>
       ) : (
-        /* WISHLIST GRID */
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        /* WISHLIST GRID (3 in a row / 33.3% width) */
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {wishlistProducts.map((product) => {
             const pId = product._id || product.id;
             const inCart = cartIds.includes(pId);

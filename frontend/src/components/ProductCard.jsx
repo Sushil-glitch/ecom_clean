@@ -135,9 +135,9 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
   return (
     <>
       <div
-        className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500"
+        className="group relative flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500"
       >
-        <div>
+        <div className="flex flex-1 flex-col">
           {/* IMAGE CONTAINER WITH ACCESSIBLE LINK */}
           <Link
             to={`/shop?product=${productId}`}
@@ -228,11 +228,11 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
           </div>
 
           {/* CATEGORY & STAR RATING */}
-          <div className="flex items-center justify-between mt-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <div className="flex items-center justify-between mt-1 gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 truncate max-w-[65%]">
               {product.category || "Product"}
             </span>
-            <div className="flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-full">
+            <div className="flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-full shrink-0">
               <Star size={12} className="fill-amber-400 text-amber-500" />
               <span>{product.rating || "4.8"}</span>
               <span className="text-slate-500 font-normal">({product.reviewsCount || "120+"})</span>
@@ -240,29 +240,30 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
           </div>
 
           {/* TITLE LINK */}
-          <h3 className="mt-2 line-clamp-2 min-h-[2.5rem] text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-600 transition" title={product.name}>
+          <h3 className="mt-2 h-11 line-clamp-2 text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug" title={product.name}>
             <Link
               to={`/shop?product=${productId}`}
               onClick={(e) => {
                 if (onViewDetails) {
                   e.preventDefault();
                   onViewDetails(product);
+                } else {
                   setShowModal(true);
                 }
               }}
-              className="hover:underline focus:outline-none focus:text-blue-600"
+              className="hover:underline focus:outline-none focus:text-blue-600 line-clamp-2"
             >
               {product.name}
             </Link>
           </h3>
 
-          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
-            {product.description}
+          <p className="mt-1 h-8 line-clamp-2 text-xs leading-relaxed text-slate-500 font-medium">
+            {product.description || "Premium quality product with guaranteed satisfaction and fast shipping."}
           </p>
         </div>
 
         {/* PRICE & ACTION */}
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3">
           <div>
             <div className="flex items-baseline gap-1.5">
               <span className="text-base font-extrabold text-slate-900">

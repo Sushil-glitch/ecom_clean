@@ -266,9 +266,9 @@ const Shop = () => {
         (p._id || p.id) !== currentId &&
         isCategoryMatch(p.category, viewingProduct.category)
     );
-    if (sameCategory.length >= 2) return sameCategory.slice(0, 4);
+    if (sameCategory.length >= 2) return sameCategory.slice(0, 3);
     const fallback = products.filter((p) => (p._id || p.id) !== currentId);
-    return fallback.slice(0, 4);
+    return fallback.slice(0, 3);
   }, [viewingProduct, products]);
 
   // =====================================================
@@ -517,8 +517,8 @@ const Shop = () => {
           )}
         </div>
 
-        {/* PRODUCTS GRID REUSING ACCESSIBLE PRODUCTCARD */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* PRODUCTS GRID REUSING ACCESSIBLE PRODUCTCARD (3 in a row / 33.3% width) */}
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch">
           {displayedProducts.map((product) => (
             <ProductCard
               key={product._id || product.id}
@@ -738,7 +738,7 @@ const Shop = () => {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {relatedProducts.map((relProduct) => {
                       const relId = relProduct._id || relProduct.id;
                       const isRelInCart = cartIds.includes(relId);

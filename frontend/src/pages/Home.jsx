@@ -241,10 +241,10 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  // Show only in-stock active products in Featured to avoid out-of-stock badges
+  // Show only in-stock active products in Featured (2 rows of 3 = 6 products)
   const featuredProducts = products
     .filter((product) => product.isActive !== false && Number(product.stock) > 0)
-    .slice(0, 8);
+    .slice(0, 6);
 
   // Top featured product for Hero Card (must be in stock)
   const topProduct = products.find((p) => p.isActive !== false && Number(p.stock) > 0) || products[0];
@@ -588,24 +588,21 @@ const Home = () => {
 
           </div>
 
-          {/* LOADING */}
-
+          {/* LOADING (3 in a row / 33.3% width) */}
           {loadingProducts && (
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-              {[1, 2, 3, 4].map((item) => (
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((item) => (
                 <div
                   key={item}
                   className="h-80 animate-pulse rounded-2xl bg-slate-200"
                 />
               ))}
-
             </div>
           )}
 
-          {/* PRODUCTS */}
+          {/* PRODUCTS (3 in a row / 33.3% width) */}
           {!loadingProducts && featuredProducts.length > 0 && (
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredProducts.map((product) => (
                 <ProductCard
                   key={product._id || product.id}
