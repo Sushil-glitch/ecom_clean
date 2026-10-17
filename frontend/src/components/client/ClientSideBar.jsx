@@ -217,7 +217,7 @@ const ClientSidebar = ({
             HEADER
         ================================================= */}
 
-        <div className="flex h-20 items-center justify-between border-b border-slate-200 px-6">
+        <div className="flex h-16 items-center justify-between border-b border-slate-200 px-6">
 
           <Link to="/" className="group flex flex-col">
             <h1 className="text-lg font-bold text-slate-900 transition group-hover:text-blue-600">

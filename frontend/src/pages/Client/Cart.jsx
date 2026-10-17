@@ -735,21 +735,21 @@ const Cart = () => {
                   key={pId}
                   className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center"
                 >
-                  <div className="flex h-28 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:w-28">
+                  <div className="flex h-28 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-50 p-1 sm:w-28 border border-slate-100">
                     {product.image ? (
-                      <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+                      <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
                     ) : (
                       <ShoppingCart size={36} className="text-slate-300 opacity-60" />
                     )}
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
                       {product.category}
                     </p>
-                    <h3 className="mt-1 font-bold text-slate-900">{product.name}</h3>
-                    <p className="mt-1 text-xs text-slate-500">{product.description}</p>
-                    <p className="mt-2 text-lg font-bold text-slate-900">₹{product.price}</p>
+                    <h3 className="mt-1 font-bold text-slate-900 truncate">{product.name}</h3>
+                    <p className="mt-1 text-xs text-slate-500 line-clamp-2">{product.description}</p>
+                    <p className="mt-2 text-base font-extrabold text-slate-900">₹{Number(product.price || 0).toLocaleString("en-IN")}</p>
                   </div>
 
                   <div className="flex items-center justify-between gap-4 sm:flex-col">

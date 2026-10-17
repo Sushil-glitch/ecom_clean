@@ -98,7 +98,7 @@ const DeliverySidebar = ({ sidebarOpen, setSidebarOpen }) => {
         }`}
       >
         {/* LOGO */}
-        <div className="flex h-20 items-center justify-between border-b border-slate-200 px-5">
+        <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
           <Link to="/delivery" className="group flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition group-hover:bg-blue-700">
               <Truck size={21} />

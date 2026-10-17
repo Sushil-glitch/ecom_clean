@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 /* =====================================================
+   CLEAN MODERN SCROLLBAR & NO-SCROLLBAR UTILITIES
+===================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/* =====================================================
    CORE DESIGN TOKENS & CSS VARIABLES
 ===================================================== */
 :root {

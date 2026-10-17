@@ -326,7 +326,7 @@ const ClientDashboard = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
             { name: "Smartphones", color: "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100", label: "Smartphones & 5G" },
             { name: "Electronics", color: "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100", label: "Electronics & Audio" },

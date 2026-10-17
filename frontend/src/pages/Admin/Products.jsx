@@ -1329,10 +1329,10 @@ const Products = () => {
                   </div>
 
                   {/* TITLE & DESCRIPTION */}
-                  <h4 className="font-bold text-slate-900 line-clamp-1 text-base group-hover:text-blue-600 transition">
+                  <h4 className="font-bold text-slate-900 h-11 line-clamp-2 text-sm sm:text-base group-hover:text-blue-600 transition leading-snug" title={product.name}>
                     {product.name}
                   </h4>
-                  <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                  <p className="mt-1 text-xs text-slate-500 h-8 line-clamp-2 leading-relaxed">
                     {product.description || "No product description provided."}
                   </p>
 

@@ -377,10 +377,10 @@ const Shop = () => {
 
       {/* SEARCH / TOOLBAR / CATEGORIES */}
       <div className="space-y-5 rounded-3xl border border-slate-200/90 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
           {/* SEARCH INPUT */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 min-w-0">
             <Search
               size={18}
               className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
@@ -395,17 +395,17 @@ const Shop = () => {
           </div>
 
           {/* CONTROLS */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             {/* STOCK STATUS FILTER */}
-            <div className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
-              <span className="text-xs font-semibold text-slate-500">Stock:</span>
+            <div className="flex h-11 flex-1 sm:flex-initial items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
+              <span className="text-xs font-semibold text-slate-500 shrink-0">Stock:</span>
               <select
                 value={stockFilter}
                 onChange={(e) => {
                   setStockFilter(e.target.value);
                   setVisibleCount(12);
                 }}
-                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer w-full"
                 aria-label="Filter by stock status"
               >
                 <option value="all">All Inventory</option>
@@ -415,15 +415,15 @@ const Shop = () => {
             </div>
 
             {/* PRICE FILTER */}
-            <div className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
-              <span className="text-xs font-semibold text-slate-500">Max Price:</span>
+            <div className="flex h-11 flex-1 sm:flex-initial items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
+              <span className="text-xs font-semibold text-slate-500 shrink-0">Max Price:</span>
               <select
                 value={maxPrice}
                 onChange={(e) => {
                   setMaxPrice(Number(e.target.value));
                   setVisibleCount(12);
                 }}
-                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer w-full"
                 aria-label="Filter by maximum price"
               >
                 <option value={300000}>All Prices</option>
@@ -434,16 +434,16 @@ const Shop = () => {
               </select>
             </div>
 
-            <div className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
-              <SlidersHorizontal size={16} className="text-slate-400" />
-              <span className="text-xs font-semibold text-slate-500">Sort:</span>
+            <div className="flex h-11 flex-1 sm:flex-initial items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/50 px-3.5">
+              <SlidersHorizontal size={16} className="text-slate-400 shrink-0" />
+              <span className="text-xs font-semibold text-slate-500 shrink-0">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => {
                   setSortBy(e.target.value);
                   setVisibleCount(12);
                 }}
-                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer w-full"
                 aria-label="Sort products by"
               >
                 <option value="featured">Featured</option>
@@ -455,7 +455,7 @@ const Shop = () => {
         </div>
 
         {/* CATEGORIES CHIPS */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 border-t border-slate-100">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 border-t border-slate-100 no-scrollbar scroll-smooth">
           <Filter size={15} className="shrink-0 text-slate-400 mr-1" />
           {categories.map((category) => {
             const count = category === "All"

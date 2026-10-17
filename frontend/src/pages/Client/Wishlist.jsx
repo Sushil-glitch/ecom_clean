@@ -261,11 +261,11 @@ const Wishlist = () => {
                       {product.category}
                     </span>
 
-                    <h3 className="mt-1.5 text-base font-bold text-slate-900 line-clamp-1 transition group-hover:text-blue-600">
+                    <h3 className="mt-1.5 h-11 text-sm sm:text-base font-bold text-slate-900 line-clamp-2 leading-snug transition group-hover:text-blue-600">
                       {product.name}
                     </h3>
 
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
+                    <p className="mt-1 h-8 line-clamp-2 text-xs leading-relaxed text-slate-500 font-medium">
                       {product.description}
                     </p>
                   </div>
@@ -273,7 +273,7 @@ const Wishlist = () => {
 
                 {/* BOTTOM PRICE & ACTION */}
                 <div className="mt-auto flex items-center justify-between border-t border-slate-100 p-4">
-                  <span className="text-lg font-bold text-slate-900">₹{Number(product.price).toFixed(2)}</span>
+                  <span className="text-base sm:text-lg font-extrabold text-slate-900">₹{Number(product.price || 0).toLocaleString("en-IN")}</span>
 
                   {!inCart ? (
                     <button

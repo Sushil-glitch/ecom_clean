@@ -128,7 +128,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             LOGO
         ========================== */}
 
-        <div className="flex h-20 items-center justify-between border-b border-slate-200 px-5">
+        <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
 
           <Link to="/" className="group flex items-center gap-3">
 
