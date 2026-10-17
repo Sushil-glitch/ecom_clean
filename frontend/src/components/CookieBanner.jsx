@@ -119,12 +119,12 @@ const CookieBanner = () => {
 
       {/* MANAGE PREFERENCES MODAL */}
       {showManageModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm overflow-y-auto">
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-modal-title"
-            className="relative w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl animate-in zoom-in-95 duration-150"
+            className="relative w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl animate-in zoom-in-95 duration-150 my-auto"
           >
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2">

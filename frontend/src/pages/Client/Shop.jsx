@@ -548,8 +548,14 @@ const Shop = () => {
           CLIENT PRODUCT QUICK VIEW DETAILS MODAL
       ================================================= */}
       {viewingProduct && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-200">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto"
+          onClick={() => setViewingProduct(null)}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* MODAL HEADER */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">

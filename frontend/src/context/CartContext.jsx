@@ -137,7 +137,7 @@ export const CartProvider = ({ children }) => {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 right-6 z-[999] flex w-full max-w-sm items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur-md transition-all duration-300 animate-in slide-in-from-bottom-5"
+          className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-20 z-[999] flex w-auto sm:w-full max-w-sm items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur-md transition-all duration-300 animate-in slide-in-from-bottom-5"
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
