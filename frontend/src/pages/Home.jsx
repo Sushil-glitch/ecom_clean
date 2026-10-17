@@ -25,7 +25,7 @@ import Navbar from "../components/Navbar.jsx";
 import BackToTop from "../components/BackToTop.jsx";
 import Footer from "../components/Footer.jsx";
 import ProductCard from "../components/ProductCard.jsx";
-import { getCartCount, dispatchCartEvent } from "../utils/cartUtils.js";
+import { getCartCount, getValidCart, dispatchCartEvent } from "../utils/cartUtils.js";
 import { STORE_CATEGORIES, getCategoryMetadata } from "../config/categories.js";
 import { STORE_CLAIMS } from "../config/constants.js";
 import { formatPrice } from "../utils/formatters.js";
@@ -135,7 +135,7 @@ const Home = () => {
   const updateCartState = () => {
     setCartCount(getCartCount());
     try {
-      const savedCart = JSON.parse(localStorage.getItem("clientCart") || "[]");
+      const savedCart = getValidCart();
       setCartIds(savedCart);
     } catch (e) {
       console.error(e);
@@ -607,10 +607,6 @@ const Home = () => {
                 <ProductCard
                   key={product._id || product.id}
                   product={product}
-                  onAddToCart={() => {
-                    const pId = product._id || product.id;
-                    toggleCart(pId);
-                  }}
                   onViewDetails={() => navigate("/shop")}
                 />
               ))}

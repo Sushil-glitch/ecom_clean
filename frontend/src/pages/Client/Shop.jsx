@@ -123,29 +123,30 @@ const Shop = () => {
     }
   }, [products, location.search]);
 
-  // =====================================================
-  // LOAD WISHLIST + CART
-  // =====================================================
-
+  // Sync wishlist & cart with localStorage and listen for updates
   useEffect(() => {
-    try {
-      const savedWishlist =
-        JSON.parse(
-          localStorage.getItem(
-            "clientWishlist"
-          ) || "[]"
+    const syncCartAndWishlist = () => {
+      try {
+        const savedWishlist = JSON.parse(
+          localStorage.getItem("clientWishlist") || "[]"
         );
+        const savedCart = getValidCart();
+        setWishlistIds(savedWishlist);
+        setCartIds(savedCart);
+      } catch (error) {
+        console.error("Failed to load cart/wishlist:", error);
+      }
+    };
 
-      const savedCart = getValidCart();
-
-      setWishlistIds(savedWishlist);
-      setCartIds(savedCart);
-    } catch (error) {
-      console.error(
-        "Failed to load cart/wishlist:",
-        error
-      );
-    }
+    syncCartAndWishlist();
+    window.addEventListener("cartUpdated", syncCartAndWishlist);
+    window.addEventListener("wishlistUpdated", syncCartAndWishlist);
+    window.addEventListener("storage", syncCartAndWishlist);
+    return () => {
+      window.removeEventListener("cartUpdated", syncCartAndWishlist);
+      window.removeEventListener("wishlistUpdated", syncCartAndWishlist);
+      window.removeEventListener("storage", syncCartAndWishlist);
+    };
   }, []);
 
   // =====================================================
@@ -523,7 +524,6 @@ const Shop = () => {
             <ProductCard
               key={product._id || product.id}
               product={product}
-              onAddToCart={() => handleQuantityChange(product._id || product.id, 1, Number(product.stock))}
               onViewDetails={(prod) => setViewingProduct(prod)}
             />
           ))}

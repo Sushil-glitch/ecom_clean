@@ -101,7 +101,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
       if (showCartNotification) {
         showCartNotification("Added to Cart", product?.name, updatedQty);
       }
-      if (onAddToCart) onAddToCart(productId, true);
+      if (onAddToCart) onAddToCart(productId, true, updatedQty);
     } catch (err) {
       console.error(err);
     }
@@ -117,7 +117,7 @@ const ProductCard = ({ product, onAddToCart, isAdmin = false, onViewDetails, onT
       if (showCartNotification) {
         showCartNotification(updatedQty > 0 ? "Cart updated" : "Removed from cart", product?.name, updatedQty);
       }
-      if (onAddToCart) onAddToCart(productId, updatedQty > 0);
+      if (onAddToCart) onAddToCart(productId, updatedQty > 0, updatedQty);
     } catch (err) {
       console.error(err);
     }
